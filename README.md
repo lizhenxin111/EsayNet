@@ -7,15 +7,16 @@
 It is under development and is not recommended
 
 1。
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
+
+		allprojects {
+			repositories {
+				...
+				maven { url 'https://jitpack.io' }
+			}
 		}
-	}
   
   
 2.
-	dependencies {
-	        compile 'com.github.lizhenxin111:EsayNet:v0.1'
-	}
+		dependencies {
+			compile 'com.github.lizhenxin111:EsayNet:v0.1'
+		}
