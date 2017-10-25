@@ -8,10 +8,15 @@ public abstract class HttpRunnable implements Runnable {
     private String name;
 
     public HttpRunnable(String name) {
+        runnableConstructorStart();
         this.name = name;
     }
 
-    public abstract String getName();
+    public abstract void runnableConstructorStart();
+
+    public String getName(){
+        return name;
+    }
 
     @Override
     public abstract void run();

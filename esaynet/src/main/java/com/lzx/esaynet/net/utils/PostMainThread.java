@@ -1,6 +1,7 @@
-package com.lzx.esaynet.net;
+package com.lzx.esaynet.net.utils;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import com.lzx.esaynet.net.listener.HttpListener;
 import com.lzx.esaynet.net.listener.ProgressListener;
@@ -10,14 +11,10 @@ import com.lzx.esaynet.net.listener.ProgressListener;
  */
 
 public class PostMainThread {
-    private Handler mHandler;
 
-    public PostMainThread(Handler mHandler) {
-        this.mHandler = mHandler;
-    }
 
-    public void postStart(final HttpListener listener) {
-        mHandler.post(new Runnable() {
+    public static void postStart(final HttpListener listener) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 listener.onStart();
@@ -25,8 +22,8 @@ public class PostMainThread {
         });
     }
 
-    public void postFailed(final HttpListener listener, final String message) {
-        mHandler.post(new Runnable() {
+    public static void postFailed(final HttpListener listener, final String message) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 listener.onFailed(message);
@@ -34,8 +31,8 @@ public class PostMainThread {
         });
     }
 
-    public void postProgress(final HttpListener listener, final int progress, final int length) {
-        mHandler.post(new Runnable() {
+    public static void postProgress(final HttpListener listener, final int progress, final int length) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 ((ProgressListener) listener).onProgress(progress, length);
@@ -43,8 +40,8 @@ public class PostMainThread {
         });
     }
 
-    public void postSuccess(final HttpListener listener, final Object o) {
-        mHandler.post(new Runnable() {
+    public static void postSuccess(final HttpListener listener, final Object o) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 listener.onSuccess(o);

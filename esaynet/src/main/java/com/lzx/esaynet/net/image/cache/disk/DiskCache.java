@@ -22,51 +22,46 @@ import java.io.OutputStream;
 
 public class DiskCache implements BaseCacheInterface {
     private DiskLruCache mDiskCache;
-    private int maxSize;
 
     public DiskCache(Context context, String dirName, int maxSize) {
-        this.maxSize = maxSize;
         try {
-            File cacheDir = getCacheDir(context, dirName);
+            File cacheDir = getDiskCacheDir(context, dirName);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
             mDiskCache = DiskLruCache.open(cacheDir, getAppVersion(context), 1, maxSize);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private int getAppVersion(Context context) {
+    public int getAppVersion(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             return info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
         return 1;
     }
 
 
-    private File getCacheDir(Context context, String dirName){
-        String path;
+    public File getDiskCacheDir(Context context, String uniqueName) {
+        String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()){
-            //SD卡存在且不可移除
-            path = context.getExternalCacheDir().getPath();
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();
         } else {
-            path = context.getCacheDir().getPath();
+            cachePath = context.getCacheDir().getPath();
         }
-        return new File(path + File.separator + dirName);
+        return new File(cachePath + File.separator + uniqueName);
     }
 
     @Override
     public void add(String link, Bitmap bmp) {
         Log.d("Http", "Disk cache add");
-        DiskLruCache.Editor editor = null;
         try {
-            editor = mDiskCache.edit(StringUtils.toHex(link));
+            DiskLruCache.Editor editor = mDiskCache.edit(StringUtils.toHex(link));
             if (editor != null) {
                 OutputStream outputStream = editor.newOutputStream(0);
                 if (bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)) {
@@ -74,6 +69,7 @@ public class DiskCache implements BaseCacheInterface {
                 } else {
                     editor.abort();
                 }
+                mDiskCache.flush();
             }
         } catch (IOException e) {
             Log.e("DiskCache", "#add: add error");
@@ -122,4 +118,5 @@ public class DiskCache implements BaseCacheInterface {
     public int size(){
         return (int) (mDiskCache.size() / 1024);
     }
+
 }
