@@ -52,7 +52,8 @@ public class HttpGet {
                     conn.setRequestMethod("GET");
                     conn.connect();
                     int stateCode = conn.getResponseCode();
-                    if (stateCode / 200 == 2){      //请求成功，返回结果
+                    Log.d("test", "code : " + stateCode);
+                    if (stateCode / 100 == 2){      //请求成功，返回结果
                         PostMainThread.postSuccess(listener, streamToString(conn.getInputStream()));
                     } else {                        //请求失败，处理返回结果
                         handleRequestCode(stateCode);
