@@ -2,6 +2,7 @@ package com.lzx.esaynet.net;
 
 /**
  * Created by lizhe on 2017/10/24.
+ * 封装线程单元
  */
 
 public abstract class HttpRunnable implements Runnable {

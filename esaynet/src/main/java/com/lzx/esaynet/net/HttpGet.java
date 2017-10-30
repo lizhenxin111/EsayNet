@@ -1,8 +1,6 @@
 package com.lzx.esaynet.net;
 
 import android.accounts.NetworkErrorException;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.lzx.esaynet.net.listener.ProgressListener;
@@ -12,7 +10,6 @@ import com.lzx.esaynet.net.utils.PostMainThread;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,10 +19,10 @@ import java.net.URL;
 
 /**
  * Created by lizhe on 2017/10/24.
+ * http请求
  */
 
 public class HttpGet {
-
     public HttpGet() {
     }
 
@@ -70,6 +67,7 @@ public class HttpGet {
             }
         };
     }
+
 
 
     /**
@@ -147,7 +145,6 @@ public class HttpGet {
                             throw new NetworkErrorException("502 Bad Gateway  错误的网关");
                         case 3:
                             throw new NetworkErrorException("503： Service Unavailable  服务器临时过载");
-
                     }
                     break;
                 default:break;

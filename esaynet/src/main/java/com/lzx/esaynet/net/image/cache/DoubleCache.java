@@ -39,7 +39,15 @@ public class DoubleCache implements BaseCacheInterface {
 
     @Override
     public boolean clear() {
+         clearMemoryCache();
+        return clearDiskCache();
+    }
+
+    public void clearMemoryCache() {
         mMemoryCache.clear();
+    }
+
+    public boolean clearDiskCache(){
         return mDiskCache.clear();
     }
 

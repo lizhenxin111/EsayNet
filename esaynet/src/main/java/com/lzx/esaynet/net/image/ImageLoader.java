@@ -14,6 +14,7 @@ import com.lzx.esaynet.net.listener.ProgressListener;
 
 /**
  * Created by lizhe on 2017/10/24.
+ * 图片加载器
  */
 
 public class ImageLoader {
@@ -28,41 +29,42 @@ public class ImageLoader {
     }
 
 
+    /**
+     * @param link      图片链接
+     * @param listener  带有进度的下载接口
+     */
     public void load(final String link, final ProgressListener<Bitmap> listener){
         Log.d("IMAGE", "load");
-        if (mCache != null){
-            if (mCache.get(link) != null){
-                Log.d("IMAGE", "load from cache");
-                listener.onSuccess(mCache.get(link));
-                return;
-            }
-        }
-
-        Log.d("IMAGE", "load from net");
-        HttpRunnable runnable = mHttpGet.getBytes(link, new ProgressListener<byte[]>() {
-            @Override
-            public void onProgress(int progress, int length) {
-                listener.onProgress(progress, length);
-            }
-
-            @Override
-            public void onStart() {
-                listener.onStart();
-            }
-
-            @Override
-            public void onSuccess(byte[] result) {
-                if (mCache != null){
-                    mCache.add(link, BitmapFactory.decodeByteArray(result, 0, result.length));
+        if (mCache != null && mCache.get(link) != null){
+            Log.d("IMAGE", "load from cache");
+            listener.onSuccess(mCache.get(link));
+        } else {
+            Log.d("IMAGE", "load from net");
+            HttpRunnable runnable = mHttpGet.getBytes(link, new ProgressListener<byte[]>() {
+                @Override
+                public void onProgress(int progress, int length) {
+                    listener.onProgress(progress, length);
                 }
-                listener.onSuccess(BitmapFactory.decodeByteArray(result, 0, result.length));
-            }
 
-            @Override
-            public void onFailed(String error) {
-                listener.onFailed(error);
-            }
-        });
-        mQueue.execute(runnable);
+                @Override
+                public void onStart() {
+                    listener.onStart();
+                }
+
+                @Override
+                public void onSuccess(byte[] result) {
+                    listener.onSuccess(BitmapFactory.decodeByteArray(result, 0, result.length));
+                    if (mCache != null) {
+                        mCache.add(link, BitmapFactory.decodeByteArray(result, 0, result.length));
+                    }
+                }
+
+                @Override
+                public void onFailed(String error) {
+                    listener.onFailed(error);
+                }
+            });
+            mQueue.execute(runnable);
+        }
     }
 }
