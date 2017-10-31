@@ -33,4 +33,8 @@ public class RequestQueue {
     public void shutdown(){
         mService.shutdown();
     }
+
+    public void shutdownNow() {
+        mService.shutdownNow();
+    }
 }
